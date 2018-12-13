@@ -7,37 +7,39 @@ m = n = 0
 
 
 def find_path(p_pos, f_pos, board):
-    p_r, p_c = p_pos
-    dfs_expanded = []
-    dfs_pruned = []
-    stack = [(p_r, p_c)]
+    pr, pc = p_pos
+    bfs_expanded = []
+    bfs_pruned = []
+    q = [(pr, pc)]
     # Using dynamic programming to retrieve final path taken
     p_table = [[None] * n for _ in range(m)]
+    p_table[pr][pc] = (pr, pc)
 
-    while stack:
-        p_r, p_c = stack.pop()
-        dfs_expanded.append((p_r, p_c))
-        if (p_r, p_c) == f_pos:
+    while q:
+        pr, pc = q.pop(0)
+        bfs_expanded.append((pr, pc))
+        if (pr, pc) == f_pos:
             break
         for move in moves:
-            r, c = p_r + move[0], p_c + move[1]
+            r, c = pr + move[0], pc + move[1]
             if board[r][c] != WALL and not p_table[r][c]:
-                p_table[r][c] = (p_r, p_c)
-                stack.append((r, c))
-    print(len(dfs_expanded))
-    for r, c in dfs_expanded:
+                p_table[r][c] = (pr, pc)
+                q.append((r, c))
+
+    print(len(bfs_expanded))
+    for r, c in bfs_expanded:
         print("{} {}".format(r, c))
 
     r, c = f_pos
-    p_r, p_c = p_pos
-    while (r, c) != (p_r, p_c):
-        dfs_pruned.append((r, c))
+    pr, pc = p_pos
+    while (r, c) != p_pos:
+        bfs_pruned.append((r, c))
         r, c = p_table[r][c]
-    # Don't forget to append the first position
-    dfs_pruned.append((p_r, p_c))
-    # -1 since not counting starting out as a move
-    print(len(dfs_pruned) - 1)
-    for r, c in reversed(dfs_pruned):
+    # Don't forget about the first position
+    bfs_pruned.append((pr, pc))
+    # -1 since do not count starting out as a move
+    print(len(bfs_pruned) - 1)
+    for r, c in reversed(bfs_pruned):
         print("{} {}".format(r, c))
 
 
